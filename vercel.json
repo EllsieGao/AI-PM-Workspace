@@ -1,0 +1,16 @@
+{
+  "functions": {
+    "src/app/api/agent/route.ts": {
+      "maxDuration": 30
+    },
+    "src/app/api/ai/route.ts": {
+      "maxDuration": 30
+    }
+  },
+  "crons": [
+    {
+      "path": "/api/cron",
+      "schedule": "0 9 */3 * *"
+    }
+  ]
+}
