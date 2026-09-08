@@ -16,6 +16,32 @@
 | **竞品雷达** | 按项目追踪竞品动态，AI 自动分析功能矩阵，行业笔记统一管理 |
 | **Prompt 库** | 内置 PM 专业模板 + 自定义 Prompt，覆盖需求、竞品、数据等场景，一键复用提效 |
 
+## 产品截图
+
+**封面导航**
+
+![封面导航](./screenshots/01-cover.png)
+
+**AI Agent**
+
+![AI Agent](./screenshots/02-agent.png)
+
+**文档中心**
+
+![文档中心](./screenshots/03-docs.png)
+
+**灵感速记**
+
+![灵感速记](./screenshots/04-memos.png)
+
+**竞品雷达**
+
+![竞品雷达](./screenshots/05-radar.png)
+
+**Prompt 库**
+
+![Prompt 库](./screenshots/06-prompts.png)
+
 ## 技术栈
 
 - **框架**: Next.js 16 (App Router, Turbopack)
@@ -36,8 +62,8 @@
 ### 1. 克隆项目
 
 ```bash
-git clone https://github.com/EllsieGao/AI-PM-Workspace.git
-cd AI-PM-Workspace
+git clone https://github.com/EllsieGao/AI-PM-Inspiration-Space.git
+cd AI-PM-Inspiration-Space
 ```
 
 ### 2. 安装依赖
