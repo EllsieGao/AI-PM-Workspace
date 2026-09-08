@@ -1,5 +1,6 @@
 import NavBar from "@/components/layout/NavBar"
 import GlobalFloatingMemo from "@/components/memos/GlobalFloatingMemo"
+import SearchCommand from "@/components/layout/SearchCommand"
 
 export default function DashboardLayout({
   children,
@@ -13,6 +14,7 @@ export default function DashboardLayout({
         {children}
       </main>
       <GlobalFloatingMemo />
+      <SearchCommand />
     </div>
   )
 }

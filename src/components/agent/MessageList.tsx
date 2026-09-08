@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useMemo } from 'react'
 import { Message } from '@/lib/types'
+import { useAgentStore } from '@/store/agentStore'
 import MdRenderer from '@/components/shared/MdRenderer'
 
 interface Props {
@@ -20,10 +21,11 @@ const SUGGESTIONS = [
 
 export default function MessageList({ messages, loading, renderMessageFooter, onPromptSelect }: Props) {
   const bottomRef = useRef<HTMLDivElement>(null)
+  const streamingContent = useAgentStore(s => s.streamingContent)
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [messages])
+  }, [messages, streamingContent])
 
   const turns = useMemo(() => {
     const result: Array<{ user?: Message; assistant?: Message }> = []
@@ -132,13 +134,27 @@ export default function MessageList({ messages, loading, renderMessageFooter, on
         </div>
       ))}
 
-      {/* ── 加载指示器 ── */}
+      {/* ── 流式加载 / 加载指示器 ── */}
       {loading && (
-        <div className="flex justify-start px-1 py-1">
-          <div
-            className="w-16 h-[2px] rounded-full bg-gradient-to-r from-amber-200/40 to-rose-300/30 animate-pulse"
-            style={{ animationDuration: '2.5s' }}
-          />
+        <div className="flex flex-col gap-2">
+          {streamingContent ? (
+            <div className="w-full">
+              <div className="font-serif text-gray-800 leading-relaxed tracking-wide text-[15px]">
+                <MdRenderer content={streamingContent} variant="chat" />
+              </div>
+              <div
+                className="w-16 h-[2px] rounded-full bg-gradient-to-r from-amber-200/40 to-rose-300/30 animate-pulse mt-1"
+                style={{ animationDuration: '1.5s' }}
+              />
+            </div>
+          ) : (
+            <div className="flex justify-start px-1 py-1">
+              <div
+                className="w-16 h-[2px] rounded-full bg-gradient-to-r from-amber-200/40 to-rose-300/30 animate-pulse"
+                style={{ animationDuration: '2.5s' }}
+              />
+            </div>
+          )}
         </div>
       )}
 

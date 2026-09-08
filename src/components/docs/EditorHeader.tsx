@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Sparkles, CheckCircle2, Loader2, Download, FileDown, FileText, Trash2 } from "lucide-react"
+import { Sparkles, CheckCircle2, Loader2, Download, FileDown, FileText, Trash2, History } from "lucide-react"
 import type { Document, AiAction } from "@/lib/types"
 import { DOC_TYPES } from "@/lib/constants"
 import { useMediaQuery } from "@/hooks/useMediaQuery"
@@ -12,9 +12,10 @@ interface Props {
   onAiAction: (action: AiAction) => void
   onExport: (format: "markdown" | "pdf") => void
   onDelete: () => void
+  onVersionHistory: () => void
 }
 
-export default function EditorHeader({ doc, saveStatus, onAiAction, onExport, onDelete }: Props) {
+export default function EditorHeader({ doc, saveStatus, onAiAction, onExport, onDelete, onVersionHistory }: Props) {
   const [showExport, setShowExport] = useState(false)
   const isMobile = useMediaQuery('(max-width: 768px)')
   const info = DOC_TYPES[doc.type]
@@ -199,6 +200,28 @@ export default function EditorHeader({ doc, saveStatus, onAiAction, onExport, on
             </>
           )}
         </div>
+
+        <button
+          onClick={onVersionHistory}
+          title="版本历史"
+          style={{
+            height: 28,
+            fontSize: 11,
+            fontWeight: 500,
+            padding: isMobile ? "0 6px" : "0 10px",
+            borderRadius: 6,
+            border: "0.5px solid var(--border)",
+            background: "var(--surface)",
+            color: "var(--text2)",
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            gap: 4,
+          }}
+        >
+          <History size={12} />
+          {!isMobile && "版本"}
+        </button>
 
         <div style={{ width: 1, height: 20, background: 'var(--border)', margin: '0 4px' }} />
 

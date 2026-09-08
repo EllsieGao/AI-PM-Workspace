@@ -2,11 +2,12 @@
 
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Plus, Trash2, ExternalLink, FileText, BarChart3, Loader2, X, Search, Send } from 'lucide-react'
+import { Plus, Trash2, ExternalLink, FileText, BarChart3, Loader2, X, Search, Send, Table2 } from 'lucide-react'
 import { toast } from 'sonner'
 import { useRadarStore } from '@/store/radarStore'
 import { useAgentStore } from '@/store/agentStore'
 import { useRouter } from 'next/navigation'
+import MatrixView from './MatrixView'
 
 const PROJECT_COLORS = ['#f59e0b', '#ef4444', '#3b82f6', '#8b5cf6', '#10b981', '#ec4899', '#06b6d4']
 
@@ -23,7 +24,7 @@ export default function RadarCenter() {
   const [showNewProject, setShowNewProject] = useState(false)
   const [newProjectName, setNewProjectName] = useState('')
   const [newProjectDesc, setNewProjectDesc] = useState('')
-  const [tab, setTab] = useState<'competitors' | 'notes'>('competitors')
+  const [tab, setTab] = useState<'competitors' | 'notes' | 'matrix'>('competitors')
 
   // Competitor form
   const [showAddComp, setShowAddComp] = useState(false)
@@ -170,6 +171,7 @@ export default function RadarCenter() {
             <div style={{ display: 'flex', gap: 24, marginBottom: 20, borderBottom: '1px solid #f0f0f0', paddingBottom: 12 }}>
               {[
                 { key: 'competitors' as const, icon: BarChart3, label: `竞品 (${competitors.length})` },
+                { key: 'matrix' as const, icon: Table2, label: '对比矩阵' },
                 { key: 'notes' as const, icon: FileText, label: `行业笔记 (${notes.length})` },
               ].map(t => (
                 <button key={t.key} onClick={() => setTab(t.key)}
@@ -275,6 +277,19 @@ export default function RadarCenter() {
                   </AnimatePresence>
                 </div>
               </>
+            )}
+
+            {/* ═══════ 对比矩阵 ═══════ */}
+            {tab === 'matrix' && (
+              <div style={{ background: '#fff', borderRadius: 14, border: '1px solid #f0f0f0', padding: 20 }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+                  <div>
+                    <h3 style={{ fontSize: 15, fontWeight: 600, color: '#1e1e1e', margin: 0 }}>功能对比矩阵</h3>
+                    <p style={{ fontSize: 12, color: '#999', margin: '2px 0 0' }}>点击单元格切换状态，添加「我们的产品」作为参考基准</p>
+                  </div>
+                </div>
+                <MatrixView />
+              </div>
             )}
 
             {/* ═══════ 行业笔记 ═══════ */}

@@ -8,7 +8,9 @@ import EditorHeader from "./EditorHeader"
 import AiPanel from "./AiPanel"
 import DocTemplateCard from "./DocTemplateCard"
 import MdRenderer from "@/components/shared/MdRenderer"
+import VersionHistory from "./VersionHistory"
 import { useMediaQuery } from "@/hooks/useMediaQuery"
+import { createClient } from "@/lib/supabase"
 
 export default function DocEditor() {
   const {
@@ -32,6 +34,7 @@ export default function DocEditor() {
   const timerRef = useRef<ReturnType<typeof setTimeout>>(null)
   const [exporting, setExporting] = useState(false)
   const [preview, setPreview] = useState(false)
+  const [showVersionHistory, setShowVersionHistory] = useState(false)
   const isMobile = useMediaQuery('(max-width: 768px)')
 
   // Sync store → local state when activeDoc changes
@@ -148,6 +151,29 @@ export default function DocEditor() {
     },
     [activeDoc, title, content, updateDoc, setSaveStatus, setAiPanel, closeAiPanel]
   )
+
+  // Save version handler
+  const handleSaveVersion = async () => {
+    if (!activeDoc) return
+    const supabase = createClient()
+    const newVersion = (activeDoc.version || 1) + 1
+    await supabase.from("document_versions").insert({
+      document_id: activeDoc.id,
+      version: newVersion,
+      content: content || activeDoc.content,
+    })
+    await supabase.from("documents").update({ version: newVersion }).eq("id", activeDoc.id)
+    // Update local version
+    updateDoc(activeDoc.id, { version: newVersion } as any)
+  }
+
+  // Restore version handler
+  const handleRestoreVersion = (restoredContent: string) => {
+    setContent(restoredContent)
+    if (activeDoc) {
+      updateDoc(activeDoc.id, { content: restoredContent })
+    }
+  }
 
   // Clean up debounce timer
   useEffect(() => {
@@ -291,7 +317,25 @@ export default function DocEditor() {
 
   return (
     <div id="prd-ultimate-editor" style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
-      <EditorHeader doc={activeDoc} saveStatus={saveStatus} onAiAction={handleAiAction} onExport={handleExport} onDelete={() => deleteDoc(activeDoc.id)} />
+      <EditorHeader
+        doc={activeDoc}
+        saveStatus={saveStatus}
+        onAiAction={handleAiAction}
+        onExport={handleExport}
+        onDelete={() => deleteDoc(activeDoc.id)}
+        onVersionHistory={() => setShowVersionHistory(true)}
+      />
+
+      {showVersionHistory && (
+        <VersionHistory
+          docId={activeDoc.id}
+          currentContent={content}
+          currentVersion={activeDoc.version || 1}
+          onClose={() => setShowVersionHistory(false)}
+          onRestore={handleRestoreVersion}
+          onSaveVersion={handleSaveVersion}
+        />
+      )}
 
       <div style={{ flex: 1, width: "100%", maxWidth: "100%", boxSizing: "border-box", overflowY: "auto", overflowX: "hidden", padding: "24px 16px 24px 32px" }}>
         {/* Preview toggle */}

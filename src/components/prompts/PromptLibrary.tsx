@@ -1,19 +1,21 @@
 'use client'
 
 import { useEffect, useState, useCallback } from 'react'
-import { Copy, Check, SendHorizonal, Plus, Trash2, SlidersHorizontal, Loader2, X } from 'lucide-react'
+import { Copy, Check, SendHorizonal, Plus, Trash2, SlidersHorizontal, Loader2, X, Sparkles } from 'lucide-react'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 import { usePromptStore } from '@/store/usePromptStore'
 import { useAgentStore } from '@/store/agentStore'
+import { extractVariables } from '@/lib/promptUtils'
+import VariableFillDialog from './VariableFillDialog'
 
 const BUILT_IN_TEMPLATES = [
-  { title: '写 PRD', scene: '需求文档', content: '请帮我写一份产品需求文档。\n功能名称：[填写]\n目标用户：[填写]\n核心场景：[填写]\n请先确认以上信息后开始撰写' },
-  { title: '整理会议纪要', scene: '会议记录', content: '请帮我整理以下会议记录，\n提取：参会人、核心决策、行动项（含负责人和截止时间）、\n待确认事项。会议记录如下：' },
-  { title: '竞品分析', scene: '竞品研究', content: '请帮我对以下产品进行竞品分析，\n输出：核心功能对比、差异化优势、用户体验评估、\n可借鉴之处。产品名称：[填写]' },
-  { title: '需求拆解', scene: '开发任务', content: '请将以下产品需求拆解为开发任务，\n按 P0/P1/P2 标注优先级，\n估算每个任务的工作量（小时）。\n需求描述：' },
-  { title: '用户故事', scene: '敏捷开发', content: '请将以下需求转化为用户故事格式：\n作为[用户角色]，我希望[功能]，以便[价值]。\n并为每个故事添加验收标准。\n需求：' },
-  { title: '复盘报告', scene: '产品复盘', content: '请帮我写一份产品复盘报告，\n结构：目标回顾、数据表现、做得好的、\n做得不好的、下期改进计划。\n复盘周期和产品信息：' },
+  { title: '写 PRD', scene: '需求文档', content: '请帮我写一份产品需求文档。\n功能名称：{{功能名称}}\n目标用户：{{目标用户}}\n核心场景：{{核心场景}}\n请先确认以上信息后开始撰写' },
+  { title: '整理会议纪要', scene: '会议记录', content: '请帮我整理以下会议记录，\n提取：参会人、核心决策、行动项（含负责人和截止时间）、\n待确认事项。\n\n会议记录：\n{{会议记录内容}}' },
+  { title: '竞品分析', scene: '竞品研究', content: '请帮我对以下产品进行竞品分析，\n输出：核心功能对比、差异化优势、用户体验评估、\n可借鉴之处。\n\n产品名称：{{产品名称}}\n竞品信息：{{竞品信息}}' },
+  { title: '需求拆解', scene: '开发任务', content: '请将以下产品需求拆解为开发任务，\n按 P0/P1/P2 标注优先级，\n估算每个任务的工作量（小时）。\n\n需求描述：\n{{需求描述}}' },
+  { title: '用户故事', scene: '敏捷开发', content: '请将以下需求转化为用户故事格式：\n作为 {{用户角色}}，我希望 {{用户期望}}，以便 {{业务价值}}。\n并为每个故事添加验收标准。\n\n需求：\n{{需求内容}}' },
+  { title: '复盘报告', scene: '产品复盘', content: '请帮我写一份产品复盘报告，\n结构：目标回顾、数据表现、做得好的、\n做得不好的、下期改进计划。\n\n复盘周期：{{复盘周期}}\n产品信息：{{产品信息}}' },
 ]
 
 function BuiltInCard({ tpl, copiedId, sending, onCopy, onSendToAgent }: {
@@ -111,6 +113,7 @@ export default function PromptLibrary() {
   const [copiedId, setCopiedId] = useState('')
   const [sending, setSending] = useState(false)
   const [editingPrompt, setEditingPrompt] = useState<{ id: string; title: string; content: string; category: string } | null>(null)
+  const [variableContent, setVariableContent] = useState<string | null>(null)
 
   useEffect(() => { fetchPrompts() }, [fetchPrompts])
 
@@ -121,7 +124,25 @@ export default function PromptLibrary() {
   }, [])
 
   const handleSendToAgent = useCallback(async (content: string) => {
-    setSending(true); await startConversation(); await sendMessage(content); router.push('/agent')
+    const vars = extractVariables(content)
+    if (vars.length > 0) {
+      // Show variable fill dialog first
+      setVariableContent(content)
+      return
+    }
+    // No variables — send directly
+    setSending(true)
+    await startConversation()
+    await sendMessage(content)
+    router.push('/agent')
+  }, [startConversation, sendMessage, router])
+
+  const handleVariableFilled = useCallback(async (filledContent: string) => {
+    setVariableContent(null)
+    setSending(true)
+    await startConversation()
+    await sendMessage(filledContent)
+    router.push('/agent')
   }, [startConversation, sendMessage, router])
 
   const handleDelete = useCallback(async (id: string) => { await deletePrompt(id); toast.success('已删除') }, [deletePrompt])
@@ -216,6 +237,15 @@ export default function PromptLibrary() {
             </div>
           </div>
         </>
+      )}
+
+      {/* 变量填写 Dialog */}
+      {variableContent && (
+        <VariableFillDialog
+          content={variableContent}
+          onSend={handleVariableFilled}
+          onClose={() => setVariableContent(null)}
+        />
       )}
 
       {/* 编辑 Modal — 和新建一模一样 */}

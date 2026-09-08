@@ -1,12 +1,13 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { useAgentStore } from '@/store/agentStore'
+import { useAgentStore, PERSONA_LIST } from '@/store/agentStore'
 import { PrdTemplate } from '@/lib/prdTemplates'
 import ConversationList from './ConversationList'
 import MessageList from './MessageList'
 import MessageInput from './MessageInput'
 import SaveToDocButton from './SaveToDocButton'
+import PersonaSelector from './PersonaSelector'
 import { useMediaQuery } from '@/hooks/useMediaQuery'
 
 export default function AgentPage() {
@@ -15,6 +16,8 @@ export default function AgentPage() {
     activeConversationId,
     messages,
     loading,
+    streamingContent,
+    persona,
     fetchConversations,
     sendMessage,
     startConversation,
@@ -109,12 +112,17 @@ export default function AgentPage() {
         </div>
 
         {/* Input area */}
-        <MessageInput
-          onSend={handleSend}
-          disabled={loading}
-          prefillPrompt={prefillPrompt}
-          onPrefillConsumed={() => setPrefillPrompt(null)}
-        />
+        <div>
+          <div className="flex items-center gap-2 px-3 pb-1">
+            <PersonaSelector />
+          </div>
+          <MessageInput
+            onSend={handleSend}
+            disabled={loading}
+            prefillPrompt={prefillPrompt}
+            onPrefillConsumed={() => setPrefillPrompt(null)}
+          />
+        </div>
       </div>
     )
   }
@@ -129,8 +137,13 @@ export default function AgentPage() {
       {/* 右侧 · 主对话区 Bento 卡片 */}
       <div className="flex-1 flex flex-col rounded-2xl border border-gray-200/60 bg-white/80 backdrop-blur-sm shadow-[0_4px_24px_rgba(0,0,0,0.015)] overflow-hidden min-w-0">
         {/* Top bar */}
-        <div className="h-12 shrink-0 flex items-center px-5 text-sm text-gray-500 border-b border-gray-100">
-          {activeConv?.title || 'AI PM 助手'}
+        <div className="h-12 shrink-0 flex items-center px-5 text-sm text-gray-500 border-b border-gray-100 justify-between">
+          <span>{activeConv?.title || 'AI PM 助手'}</span>
+          <div className="flex items-center gap-2">
+            <span className="text-[11px] text-gray-400">
+              {PERSONA_LIST.find(p => p.key === persona)?.emoji} {PERSONA_LIST.find(p => p.key === persona)?.name}
+            </span>
+          </div>
         </div>
 
         {/* Messages area */}
@@ -144,12 +157,17 @@ export default function AgentPage() {
         </div>
 
         {/* Input area */}
-        <MessageInput
-          onSend={handleSend}
-          disabled={loading}
-          prefillPrompt={prefillPrompt}
-          onPrefillConsumed={() => setPrefillPrompt(null)}
-        />
+        <div>
+          <div className="flex items-center gap-2 px-5 pt-2">
+            <PersonaSelector />
+          </div>
+          <MessageInput
+            onSend={handleSend}
+            disabled={loading}
+            prefillPrompt={prefillPrompt}
+            onPrefillConsumed={() => setPrefillPrompt(null)}
+          />
+        </div>
       </div>
     </div>
   )
