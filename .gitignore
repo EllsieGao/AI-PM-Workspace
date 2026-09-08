@@ -45,3 +45,7 @@ public/workbox-*.js
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Claude Code 工具配置
+CLAUDE.md
+AGENTS.md
