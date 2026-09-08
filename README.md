@@ -2,7 +2,7 @@
 
 你的 AI 产品搭档，让每一个想法精准落地。
 
-🔗 **在线体验：[https://aipm.top](https://aipm.top)**
+🔗 **在线体验：[https://www.aipm.top](https://www.aipm.top)**
 
 融合 Agent 对话、竞品追踪、文档协作、灵感速记与 Prompt 模板，为产品经理打造完整的思考与交付闭环。
 
