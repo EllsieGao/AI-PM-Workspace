@@ -54,11 +54,11 @@ const MODULES = [
     statLabel: "条速记",
   },
   {
-    key: "design",
+    key: "radar",
     label: "竞品雷达",
     description: "追踪竞品动态，AI 智能分析竞争格局",
     icon: Crosshair,
-    href: "/design",
+    href: "/radar",
     color: "#f59e0b",
     bg: "rgba(245,158,11,0.08)",
     statLabel: "个竞品",
@@ -127,7 +127,7 @@ export default function DashboardPage() {
       case "agent": return stats.conversations
       case "docs": return stats.documents
       case "memos": return stats.memos
-      case "design": return stats.competitors
+      case "radar": return stats.competitors
       case "prompts": return stats.prompts
       default: return 0
     }

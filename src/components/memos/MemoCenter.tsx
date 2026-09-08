@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback, useRef } from 'react'
 import { useRouter } from 'next/navigation'
-import { motion, AnimatePresence } from 'motion/react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { Copy, Check, Trash2, SendHorizonal, Loader2 } from 'lucide-react'
 import { toast } from 'sonner'
 import { useMemoStore, MEMO_CATEGORIES } from '@/store/useMemoStore'

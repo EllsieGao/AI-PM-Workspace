@@ -17,7 +17,7 @@ const items = [
   { href: '/agent', label: 'Agent' },
   { href: '/docs', label: '文档' },
   { href: '/memos', label: '速记' },
-  { href: '/design', label: '竞品' },
+  { href: '/radar', label: '竞品' },
   { href: '/prompts', label: 'Prompt' },
 ]
 

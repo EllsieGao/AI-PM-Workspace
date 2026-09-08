@@ -61,21 +61,6 @@ export interface Message {
   created_at: string
 }
 
-export type ResourceSource = '21st' | 'bento' | 'v0' | 'other'
-export type ResourceCategory = 'component' | 'layout' | 'template' | 'other'
-
-export interface DesignResource {
-  id: string
-  title: string
-  url: string
-  source: ResourceSource
-  category: ResourceCategory
-  note: string
-  image_url: string
-  tags: string[]
-  created_at: string
-}
-
 // 竞品雷达
 export interface RadarProject {
   id: string

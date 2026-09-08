@@ -1,18 +1,10 @@
 -- ============================================================
--- AI PM Workspace — 完整数据库初始化
+-- AI PM 灵感空间 — 完整数据库初始化
 -- 在 Supabase SQL Editor 中粘贴执行:
 -- https://supabase.com/dashboard/project/fngbkdormyqrmshsqlbx/sql/new
 -- ============================================================
 
 -- 1. 文档系统
-create table if not exists categories (
-  id uuid primary key default gen_random_uuid(),
-  name text not null,
-  color text default '#6366f1',
-  icon text default 'folder',
-  created_at timestamptz default now()
-);
-
 create table if not exists documents (
   id uuid primary key default gen_random_uuid(),
   title text not null default '未命名文档',
@@ -90,27 +82,13 @@ create table if not exists prompt_versions (
   created_at timestamptz default now()
 );
 
--- 5. 设计资源
-create table if not exists design_resources (
-  id uuid primary key default gen_random_uuid(),
-  title text not null,
-  url text not null,
-  source text not null check (source in ('21st','bento','v0','other')),
-  category text not null check (category in ('component','layout','template','other')),
-  note text default '',
-  image_url text default '',
-  tags text[] default '{}',
-  created_at timestamptz default now()
-);
-
--- 6. RLS (公开访问 — 本应用不使用 Supabase Auth)
+-- 5. RLS (公开访问 — 本应用不使用 Supabase Auth)
 alter table documents enable row level security;
 alter table conversations enable row level security;
 alter table messages enable row level security;
 alter table memos enable row level security;
 alter table prompts enable row level security;
 alter table prompt_versions enable row level security;
-alter table design_resources enable row level security;
 
 create policy "public_access" on documents for all using (true);
 create policy "public_access" on conversations for all using (true);
@@ -118,4 +96,3 @@ create policy "public_access" on messages for all using (true);
 create policy "public_access" on memos for all using (true);
 create policy "public_access" on prompts for all using (true);
 create policy "public_access" on prompt_versions for all using (true);
-create policy "public_access" on design_resources for all using (true);

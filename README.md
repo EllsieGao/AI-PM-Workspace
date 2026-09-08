@@ -77,7 +77,7 @@ src/
 ├── app/
 │   ├── (dashboard)/        # 主应用布局
 │   │   ├── agent/          # AI Agent
-│   │   ├── design/         # 竞品雷达（路由）
+│   │   ├── radar/          # 竞品雷达
 │   │   ├── docs/           # 文档中心
 │   │   ├── memos/          # 灵感速记
 │   │   └── prompts/        # Prompt 库

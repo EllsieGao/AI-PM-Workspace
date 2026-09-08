@@ -27,7 +27,7 @@ const NAV_ITEMS: SearchResult[] = [
   { id: "nav-agent", title: "AI Agent", type: "navigation", subtitle: "AI 智能助手", href: "/agent" },
   { id: "nav-docs", title: "文档中心", type: "navigation", subtitle: "PRD、会议纪要等", href: "/docs" },
   { id: "nav-memos", title: "灵感速记", type: "navigation", subtitle: "快速记录想法", href: "/memos" },
-  { id: "nav-design", title: "竞品雷达", type: "navigation", subtitle: "竞品追踪与分析", href: "/design" },
+  { id: "nav-radar", title: "竞品雷达", type: "navigation", subtitle: "竞品追踪与分析", href: "/radar" },
   { id: "nav-prompts", title: "Prompt 库", type: "navigation", subtitle: "Prompt 模板管理", href: "/prompts" },
 ]
 
@@ -112,7 +112,7 @@ export default function SearchCommand() {
       })))
       if (comps) allResults.push(...comps.map((c: any) => ({
         id: c.id, title: c.name, type: "competitor" as const,
-        subtitle: c.description?.slice(0, 40) || "竞品", href: "/design",
+        subtitle: c.description?.slice(0, 40) || "竞品", href: "/radar",
       })))
       if (prompts) allResults.push(...prompts.map((p: any) => ({
         id: p.id, title: p.title, type: "prompt" as const,
